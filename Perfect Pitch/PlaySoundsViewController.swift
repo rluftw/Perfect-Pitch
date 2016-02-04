@@ -58,19 +58,15 @@ class PlaySoundsViewController: UIViewController {
     // MARK: - Helper methods
     
     func playAudio(rate: Float) {
-        audioPlayer.stop()
+        stopAndResetAudio()
+        
         audioPlayer.currentTime = 0.0
         audioPlayer.rate = rate
         audioPlayer.play()
     }
     
     func playAudioWithVariablePitch(pitch: Float) {
-        audioPlayer.stop()
-        audioEngine.stop()
-        
-        // Resets all audio nodes in the audio engine
-        audioEngine.reset()
-        
+        stopAndResetAudio()
         
         // Make an AVAudioPlayerNode and attach it onto the engine
         let audioPlayerNode = AVAudioPlayerNode()
@@ -94,5 +90,13 @@ class PlaySoundsViewController: UIViewController {
         
         // Start playing!
         audioPlayerNode.play()
+    }
+    
+    func stopAndResetAudio() {
+        audioPlayer.stop()
+        audioEngine.stop()
+        
+        // Resets all audio nodes in the audio engine
+        audioEngine.reset()
     }
 }
