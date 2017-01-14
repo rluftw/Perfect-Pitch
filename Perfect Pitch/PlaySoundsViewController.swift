@@ -20,11 +20,11 @@ class PlaySoundsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        audioPlayer = try! AVAudioPlayer(contentsOfURL: receivedAudio.fileURL)
+        audioPlayer = try! AVAudioPlayer(contentsOf: receivedAudio.fileURL as URL)
         audioPlayer.enableRate = true
         
         audioEngine = AVAudioEngine()
-        audioFile = try! AVAudioFile(forReading: receivedAudio.fileURL)
+        audioFile = try! AVAudioFile(forReading: receivedAudio.fileURL as URL)
     }
 
     override func didReceiveMemoryWarning() {
@@ -32,32 +32,32 @@ class PlaySoundsViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func playDarthvaderAudio(sender: UIButton) {
+    @IBAction func playDarthvaderAudio(_ sender: UIButton) {
         playAudioWithVariablePitch(-1000)
     }
     
     
-    @IBAction func playChipmunkAudio(sender: UIButton) {
+    @IBAction func playChipmunkAudio(_ sender: UIButton) {
         playAudioWithVariablePitch(1000)
     }
 
-    @IBAction func playSlowAudio(sender: UIButton) {
+    @IBAction func playSlowAudio(_ sender: UIButton) {
         playAudio(0.5)
     }
     
     
-    @IBAction func playFastAudio(sender: UIButton) {
+    @IBAction func playFastAudio(_ sender: UIButton) {
         playAudio(1.5)
     }
     
     
-    @IBAction func stopAudio(sender: UIButton) {
+    @IBAction func stopAudio(_ sender: UIButton) {
         audioPlayer.stop()
     }
     
     // MARK: - Helper methods
     
-    func playAudio(rate: Float) {
+    func playAudio(_ rate: Float) {
         stopAndResetAudio()
         
         audioPlayer.currentTime = 0.0
@@ -65,25 +65,25 @@ class PlaySoundsViewController: UIViewController {
         audioPlayer.play()
     }
     
-    func playAudioWithVariablePitch(pitch: Float) {
+    func playAudioWithVariablePitch(_ pitch: Float) {
         stopAndResetAudio()
         
         // Make an AVAudioPlayerNode and attach it onto the engine
         let audioPlayerNode = AVAudioPlayerNode()
-        audioEngine.attachNode(audioPlayerNode)
+        audioEngine.attach(audioPlayerNode)
         
         
         // Make a AVAudioUnitTimePitch and attach it onto the engine
         let changePitchEffect = AVAudioUnitTimePitch()
         changePitchEffect.pitch = pitch
-        audioEngine.attachNode(changePitchEffect)
+        audioEngine.attach(changePitchEffect)
         
         // Connect the player with effect
         audioEngine.connect(audioPlayerNode, to: changePitchEffect, format: nil)
         audioEngine.connect(changePitchEffect, to: audioEngine.outputNode, format: nil)
     
         // Schedule to play the entire audio file
-        audioPlayerNode.scheduleFile(audioFile, atTime: nil, completionHandler: nil)
+        audioPlayerNode.scheduleFile(audioFile, at: nil, completionHandler: nil)
         
         // Start the engine
         try! audioEngine.start()
